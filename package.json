@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "async": "^2.3.0",
+    "chart.js": "^2.5.0",
     "chartjs-node": "^1.4.1",
     "commander": "^2.9.0",
     "thebluealliance": "^1.2.3"
