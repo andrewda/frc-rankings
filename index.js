@@ -72,7 +72,7 @@ let gatherData = (options, callback) => {
 	});
 };
 
-let plotData = (teams, max, count, labels) => {
+let plotData = (teams, max, median, count, labels) => {
 	const chartNode = new ChartjsNode(1200, 600);
 
 	const chartJsOptions = {
@@ -98,16 +98,23 @@ let plotData = (teams, max, count, labels) => {
 					teams.forEach((team) => {
 						// Draw our position
 						ctx.beginPath();
-						ctx.strokeStyle = team.alliance = '#000000';
-						ctx.moveTo((team[1] / max) * 100 * ((chartArea.right - chartArea.left) / 95) + chartArea.left, 0);
-						ctx.lineTo((team[1] / max) * 100 * ((chartArea.right - chartArea.left) / 95) + chartArea.left, 600);
+						ctx.strokeStyle = '#000000';
+						ctx.moveTo((team[1] / max) * 100 * ((chartArea.right - chartArea.left) / 100) + chartArea.left, 0);
+						ctx.lineTo((team[1] / max) * 100 * ((chartArea.right - chartArea.left) / 100) + chartArea.left, 600);
 						ctx.stroke();
 
 						// Draw team info
 						ctx.fillStyle = '#000000';
 						ctx.textAlign = 'center';
-						ctx.fillText(team[0], (team[1] / max) * 100 * ((chartArea.right - chartArea.left) / 95) + chartArea.left + team[0].length * 4, Math.floor((Math.random() * 600) + 1));
+						ctx.fillText(team[0], (team[1] / max) * 100 * ((chartArea.right - chartArea.left) / 100) + chartArea.left + team[0].length * 4, Math.floor((Math.random() * 600) + 1));
 					});
+
+					// Draw median
+					ctx.beginPath();
+					ctx.strokeStyle = '#0000ff';
+					ctx.moveTo((median / max) * 100 * ((chartArea.right - chartArea.left) / 100) + chartArea.left, 0);
+					ctx.lineTo((median / max) * 100 * ((chartArea.right - chartArea.left) / 100) + chartArea.left, 600);
+					ctx.stroke();
 				},
 				beforeDraw: (chart) => {
 					const ctx = chart.chart.ctx;
@@ -118,6 +125,19 @@ let plotData = (teams, max, count, labels) => {
 					ctx.fillStyle = '#ffffff';
 					ctx.fillRect(0, 0, 1200, 600);
 					ctx.restore();
+
+					const dataset = chart.config.data.datasets[0];
+
+					for (let i = 0; i < dataset._meta[0].data.length; i++) {
+						let model = dataset._meta[0].data[i]._model;
+
+						let offset = ((max / 40) * ((chartArea.right - chartArea.left) / max) + chartArea.left)/2;
+
+						model.x += offset;
+
+						model.controlPointNextX += offset;
+						model.controlPointPreviousX += offset;
+					}
 				}
 			}
 		}
@@ -128,12 +148,24 @@ let plotData = (teams, max, count, labels) => {
 	});
 }
 
+let findMedian = (values) => {
+    values.sort((a,b) => { return a - b; });
+
+    var half = Math.floor(values.length / 2);
+
+    if (values.length % 2) return values[half];
+    else return (values[half - 1] + values[half]) / 2.0;
+}
+
 let rankFunction = (options) => {
 	options.teams = options.teams.split(',');
 
 	gatherData(options, (result, statName) => {
 		let sortable = [];
+		let values = [];
+
 		for (let team in result) {
+			values.push(result[team]);
 			sortable.push([team, result[team]]);
 		}
 
@@ -156,13 +188,13 @@ let rankFunction = (options) => {
 		console.log('------------------------------------');
 
 		let max = sortable[0][1];
-		let count = [];
+		var count = [];
 		let labels = [];
 
 		let datapoints = 20;
 
-		for (let p = 0; p < datapoints; p++) {
-			labels[p] = parseInt((1 / datapoints) * p * 100);
+		for (let p = 0; p < datapoints + 1; p++) {
+			labels[p] = Math.round((max * (1 / datapoints) * p) * 100) / 100;
 		}
 
 		for (let i = 0; i < sortable.length; i++) {
@@ -174,7 +206,7 @@ let rankFunction = (options) => {
 			}
 		}
 
-		plotData(points, max, count, labels);
+		plotData(points, max, findMedian(values), count, labels);
 	});
 };
 
