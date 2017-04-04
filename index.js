@@ -188,22 +188,26 @@ let rankFunction = (options) => {
 		console.log('------------------------------------');
 
 		let max = sortable[0][1];
-		var count = [];
+		let count = [];
 		let labels = [];
 
 		let datapoints = 20;
 
-		for (let p = 0; p < datapoints + 1; p++) {
-			labels[p] = Math.round((max * (1 / datapoints) * p) * 100) / 100;
+		for (var i = 0; i < datapoints + 1; i++) {
+			labels[i] = Math.round((max * (1 / datapoints) * i) * 100) / 100;
 		}
 
-		for (let i = 0; i < sortable.length; i++) {
-			for (let n = 0; n < datapoints; n++) {
+		for (var i = 0; i < sortable.length; i++) {
+			for (var n = 0; n < datapoints; n++) {
 				if (sortable[i][1] >= max * ((1 / datapoints) * n) && sortable[i][1] < max * ((1 / datapoints) * (n + 1))) {
 					if (count[n]) count[n]++;
 					else count[n] = 1;
 				}
 			}
+		}
+
+		for (var i = 0; i < datapoints; i++) {
+			if (!count[i]) count[i] = 0;
 		}
 
 		plotData(points, max, findMedian(values), count, labels);
