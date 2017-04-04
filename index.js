@@ -145,15 +145,15 @@ let rankFunction = (options) => {
 		for (let i = 0; i < sortable.length; i++) {
 			if (options.teams.indexOf(sortable[i][0].toString()) > -1) {
 				points.push(sortable[i]);
-				console.log('------------------------------------------------');
-				console.log(`Team: ${sortable[i][0]}\n` +
-							`Avg ${statName}: ${sortable[i][1]}\n` +
-							`Ranking: ${i + 1}/${sortable.length}\n` +
-							`Top %: ${(i + 1) / sortable.length}`);
+				console.log('------------------------------------');
+				console.log(`| Team: ${sortable[i][0]}\n` +
+							`| Avg ${statName}: ${sortable[i][1]}\n` +
+							`| Ranking: ${i + 1}/${sortable.length}\n` +
+							`| Top %: ${(i + 1) / sortable.length}`);
 			}
 		}
 
-		console.log('------------------------------------------------');
+		console.log('------------------------------------');
 
 		let max = sortable[0][1];
 		let count = [];
