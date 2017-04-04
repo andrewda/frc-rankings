@@ -1,0 +1,17 @@
+{
+  "name": "frc-auto-rankings",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "Andrew Dassonville",
+  "license": "MIT",
+  "dependencies": {
+    "async": "^2.3.0",
+    "chartjs-node": "^1.4.1",
+    "commander": "^2.9.0",
+    "thebluealliance": "^1.2.3"
+  }
+}
